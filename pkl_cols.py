@@ -28,7 +28,7 @@
 
 feature_cols = [
     # Application Layer
-    '10_EWMA_chunksizes',
+    # '10_EWMA_chunksizes',
     '10_avg_chunksize',
     '10_chunksizes_50',
     '10_chunksizes_50R',
@@ -106,7 +106,7 @@ feature_cols = [
     'cumsum_diff',
     'curr_chunksize',
     'current_chunk_iat',
-    'deployment_session_id',
+    # 'deployment_session_id',
     'down_chunk_iat_50',
     'down_chunk_iat_50R',
     'down_chunk_iat_75',
@@ -119,7 +119,7 @@ feature_cols = [
     'down_chunk_iat_max',
     'down_chunk_iat_min',
     'down_chunk_iat_std',
-    'home_id',
+    # 'home_id',
 
     # Transport
     # 'index',
@@ -134,13 +134,13 @@ feature_cols = [
     'n_rebufferings',
     'parallel_flows',
     'previous_bitrate',
-    'quality',
+    # 'quality',
     'relative_timestamp',
     'service_Video_throughput_down',
     'service_Video_throughput_up',
     'service_non_video_throughput_down',
     'service_non_video_throughput_up',
-    'session_id',
+    # 'session_id',
     'size_diff_previous',
     'total_throughput_down',
     'total_throughput_up',
@@ -158,7 +158,7 @@ feature_cols = [
     'up_chunk_iat_std',
     'up_down_ratio',
     'video_duration',
-    'video_id',
+    # 'video_id',
     'video_position',
 
     # Probably Transport
@@ -289,7 +289,7 @@ feature_cols = [
     # 'userZeroRetransmit',
 
     # idk
-    'service',
+    # 'service',
     'startup3.3',
     'startup6.6',
     'startup5',
@@ -301,3 +301,12 @@ expected_cols = [
     'resolution',
     'startup_time',
 ]
+
+# Nonstandard datapoints
+   # 10_EWMA_chunksizes    object
+# deployment_session_id    object
+              # home_id    object
+              # quality    object
+           # session_id    object
+             # video_id    object
+              # service    object
