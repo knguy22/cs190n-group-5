@@ -297,10 +297,10 @@ feature_cols = [
     'startup_mc',
 ]
 
-expected_cols = [
-    'resolution',
-    'startup_time',
-]
+# expected_cols = [
+#     'resolution',
+#     'startup_time',
+# ]
 
 # Nonstandard datapoints
    # 10_EWMA_chunksizes    object
@@ -310,3 +310,4 @@ expected_cols = [
            # session_id    object
              # video_id    object
               # service    object
+

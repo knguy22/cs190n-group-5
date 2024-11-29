@@ -1,73 +1,113 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import f1_score, make_scorer
 import pickle
-from pkl_cols import feature_cols, expected_cols
-
-# pd.set_option('display.max_columns', None)  # Show all columns
-# pd.set_option('display.max_colwidth', None)  # Show full column contents
+from pkl_cols import feature_cols
 
 def main():
+    # init
     df = pd.read_pickle('all_traffic_time_10.pkl')
     df_cols = df.columns.tolist()
     for col in feature_cols:
         assert col in df_cols
 
-    features, expected = extract(df)
-    train(features, expected)
-
-def extract(df):
     features = df[feature_cols]
-    expected = df[expected_cols]
+    expected_startup = df['startup_time']
+    expected_resolution = df['resolution']
 
-    print(features.head(5))
-    print(expected.head(5))
-    # print_features_dtypes(features)
-    # print_features_dtypes(expected)
-    return features, expected
+    train_resolution(features, expected_resolution, 'rf_resolution.pkl')
+    train_startup(features, expected_startup, 'rf_startup_time.pkl')
 
-def train(features, expected):
+def train_startup(features, expected, filename):
+    # sampling
+    max_samples = 100000
+    sample_indices = np.random.choice(features.index, min(max_samples, len(features)), replace=False)
+    f_samples = features.loc[sample_indices]
+    e_samples = expected.loc[sample_indices]
+    
     # Define the model
-    rf_regressor = RandomForestRegressor(random_state=42)
-
-    # Define the hyperparameter grid
-    param_grid = {
-        'n_estimators': [40],
-        'max_depth': [10],
-        'min_samples_split': [5, 10],
-        'min_samples_leaf': [2, 4],
-    }
-
-    # Define the scoring metric
-    scorer = make_scorer(f1_score, average='weighted')
-
+    rf_regressor = RandomForestRegressor(random_state=42, n_jobs=-1)
+    
     # Perform grid search
-    grid_search = GridSearchCV(estimator=rf_regressor, param_grid=param_grid, scoring=scorer, cv=5, n_jobs=-1, error_score='raise')
-    grid_search.fit(features, expected)
-
+    param_grid = {
+        'n_estimators': [30, 50, 100],
+        'max_depth': [10, 15, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['sqrt', None],
+        'bootstrap': [True, False],
+        'criterion': ['squared_error'],
+    }
+    
+    grid_search = GridSearchCV(
+        estimator=rf_regressor, 
+        param_grid=param_grid, 
+        cv=5, 
+        n_jobs=-1, 
+        verbose=0,
+        scoring='neg_mean_squared_error'
+    )
+    
+    print('Performing grid search for startup...')
+    grid_search.fit(f_samples, e_samples)
+    
     # Save the model 
     print(f'Best hyperparameters: {grid_search.best_params_}')
-    print(f'F1 score on test data: {grid_search.best_score_:.4f}')
-
+    print(f'Negative Mean Squared Error: {grid_search.best_score_:.4f}')
+    
     best_model = grid_search.best_estimator_
-    with open('best_random_forest_model.pkl', 'wb') as file:
+    with open(filename, 'wb') as file:
         pickle.dump(best_model, file)
     
-    print('Model saved to best_random_forest_model.pkl')
+    print(f'Model saved to {filename}')
     
     return best_model
 
-def print_features_dtypes(features):
-    # Convert dtypes to a DataFrame for better formatting
-    dtypes_df = pd.DataFrame({
-        'Feature': features.columns,
-        'Data Type': features.dtypes.astype(str)
-    })
-
-    # Print the DataFrame as a string without truncation
-    print(dtypes_df.to_string(index=False))
+def train_resolution(features, expected, filename):
+    # sampling
+    max_samples = 100000
+    sample_indices = np.random.choice(features.index, min(max_samples, len(features)), replace=False)
+    f_samples = features.loc[sample_indices]
+    e_samples = expected.loc[sample_indices]
+    
+    # Define the model
+    rf_classifier = RandomForestClassifier(random_state=42, n_jobs=-1)
+    
+    # Perform grid search
+    param_grid = {
+        'n_estimators': [30, 50, 100],
+        'max_depth': [10, 15, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['sqrt', None],
+        'bootstrap': [True, False],
+        'criterion': ['gini', 'entropy'],
+    }
+    
+    grid_search = GridSearchCV(
+        estimator=rf_classifier, 
+        param_grid=param_grid, 
+        cv=5, 
+        n_jobs=-1, 
+        verbose=0,
+        scoring='f1_weighted'  # Use weighted F1 for multiclass or imbalanced problems
+    )
+    
+    print('Performing grid search for resolution...')
+    grid_search.fit(f_samples, e_samples)
+    
+    # Save the model
+    print(f'Best hyperparameters: {grid_search.best_params_}')
+    print(f'Best F1 score: {grid_search.best_score_:.4f}')
+    
+    best_model = grid_search.best_estimator_
+    with open(filename, 'wb') as file:
+        pickle.dump(best_model, file)
+    
+    print(f'Model saved to {filename}')
+    
+    return best_model
 
 if __name__ == '__main__':
-
     main()
