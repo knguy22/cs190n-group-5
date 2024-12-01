@@ -1,11 +1,13 @@
+import pickle
+
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, f1_score
 from sklearn.metrics import classification_report, confusion_matrix
-import matplotlib.pyplot as plt
-import pickle
+
 from pkl_cols import feature_cols
 
 def main():
@@ -70,61 +72,6 @@ def sample(df):
     df.loc[other_indices].to_pickle('validation_traffic_time_10.pkl')
 
     return samples, validation
-
-def score_model(validation, model_startup, model_resolution):
-    """
-    Score the trained models using validation data.
-
-    Parameters:
-    - validation: Dictionary containing validation features and expected values
-    - model_startup: Trained RandomForestRegressor for startup time prediction
-    - model_resolution: Trained RandomForestClassifier for resolution prediction
-
-    Returns:
-    - Dictionary with model performance metrics
-    """
-    # Validate startup time model (Regression)
-    startup_predictions = model_startup.predict(validation['features'])
-    startup_mse = mean_squared_error(validation['expected_startup'], startup_predictions)
-    startup_mae = mean_absolute_error(validation['expected_startup'], startup_predictions)
-    startup_r2 = r2_score(validation['expected_startup'], startup_predictions)
-
-    # Validate resolution model (Classification)
-    resolution_predictions = model_resolution.predict(validation['features'])
-    resolution_report = classification_report(
-        validation['expected_resolution'], 
-        resolution_predictions, 
-        output_dict=True,
-        zero_division=0, # prevent divisions by zero
-    )
-    resolution_confusion_matrix = confusion_matrix(
-        validation['expected_resolution'], 
-        resolution_predictions
-    )
-
-    # Print and return results
-    print("Startup Time Model Performance:")
-    print(f"Mean Squared Error: {startup_mse:.4f}")
-    print(f"Mean Absolute Error: {startup_mae:.4f}")
-    print(f"R-squared: {startup_r2:.4f}")
-
-    print("\nResolution Model Performance:")
-    print("Classification Report:")
-    print(classification_report(
-        validation['expected_resolution'], 
-        resolution_predictions,
-        zero_division=0, # prevent divisions by zero
-    ))
-    print("\nConfusion Matrix:")
-    print(resolution_confusion_matrix)
-
-    return {
-        'startup_mse': startup_mse,
-        'startup_mae': startup_mae,
-        'startup_r2': startup_r2,
-        'resolution_report': resolution_report,
-        'resolution_confusion_matrix': resolution_confusion_matrix
-    }
 
 def train_startup(features, expected, filename):
     # Define the model
@@ -222,6 +169,62 @@ def train_resolution(features, expected, filename):
     print(f'Model saved to {filename}')
 
     return best_model
+
+def score_model(validation, model_startup, model_resolution):
+    """
+    Score the trained models using validation data.
+
+    Parameters:
+    - validation: Dictionary containing validation features and expected values
+    - model_startup: Trained RandomForestRegressor for startup time prediction
+    - model_resolution: Trained RandomForestClassifier for resolution prediction
+
+    Returns:
+    - Dictionary with model performance metrics
+    """
+    # Validate startup time model (Regression)
+    startup_predictions = model_startup.predict(validation['features'])
+    startup_mse = mean_squared_error(validation['expected_startup'], startup_predictions)
+    startup_mae = mean_absolute_error(validation['expected_startup'], startup_predictions)
+    startup_r2 = r2_score(validation['expected_startup'], startup_predictions)
+
+    # Validate resolution model (Classification)
+    resolution_predictions = model_resolution.predict(validation['features'])
+    resolution_report = classification_report(
+        validation['expected_resolution'], 
+        resolution_predictions, 
+        output_dict=True,
+        zero_division=0, # prevent divisions by zero
+    )
+    resolution_confusion_matrix = confusion_matrix(
+        validation['expected_resolution'], 
+        resolution_predictions
+    )
+
+    # Print and return results
+    print("Startup Time Model Performance:")
+    print(f"Mean Squared Error: {startup_mse:.4f}")
+    print(f"Mean Absolute Error: {startup_mae:.4f}")
+    print(f"R-squared: {startup_r2:.4f}")
+
+    print("\nResolution Model Performance:")
+    print("Classification Report:")
+    print(classification_report(
+        validation['expected_resolution'], 
+        resolution_predictions,
+        zero_division=0, # prevent divisions by zero
+    ))
+    print("\nConfusion Matrix:")
+    print(resolution_confusion_matrix)
+
+    return {
+        'startup_mse': startup_mse,
+        'startup_mae': startup_mae,
+        'startup_r2': startup_r2,
+        'resolution_report': resolution_report,
+        'resolution_confusion_matrix': resolution_confusion_matrix
+    }
+
 
 def graph_col(df, col, filename):
     plt.hist(df[col], bins=100)
