@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, f1_score
 from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
 import pickle
 from pkl_cols import feature_cols
 
@@ -19,22 +20,39 @@ def main():
     print(model_scores)
 
 def sample(df):
+    res_col = 'resolution'
+    startup_col = 'startup_mc'
+
+    # correct types
+    df[res_col] = df[res_col].astype(int)
+
+    # filter out impossible values
+    print("Startup time statistics before filtering:")
+    print(df[startup_col].describe())
+
+    df[startup_col] = df[startup_col].where(df[startup_col] > 0, np.nan)
+    df = df.dropna(subset=[startup_col])
+
+    print("Startup time statistics after filtering:")
+    print(df[startup_col].describe())
+
+    # Reset index to avoid mismatches
+    df = df.reset_index(drop=True)
+
     # check the columns
     df_cols = df.columns.tolist()
     for col in feature_cols:
         assert col in df_cols
     features = df[feature_cols]
 
-    # correct types
-    df['resolution'] = df['resolution'].astype(int)
-
     # output of models
-    expected_startup = df['startup_time']
-    expected_resolution = df['resolution']
+    expected_startup = df[startup_col]
+    expected_resolution = df[res_col]
 
+    # sampling
     max_samples = 100000
-    sample_indices = np.random.choice(features.index, min(max_samples, len(features)), replace=False)
-    other_indices = np.setdiff1d(np.arange(len(features)), sample_indices)
+    sample_indices = np.random.choice(df.index, min(max_samples, len(df)), replace=False)
+    other_indices = np.setdiff1d(np.arange(len(df)), sample_indices)
 
     samples = {
         "features": features.loc[sample_indices],
@@ -129,7 +147,7 @@ def train_startup(features, expected, filename):
         cv=3,
         n_jobs=7, 
         verbose=2,
-        scoring='neg_mean_squared_error'
+        scoring='neg_mean_squared_error',
     )
 
     print('Performing grid search for startup...')
@@ -204,6 +222,13 @@ def train_resolution(features, expected, filename):
     print(f'Model saved to {filename}')
 
     return best_model
+
+def graph_col(df, col, filename):
+    plt.hist(df[col], bins=100)
+    plt.xlabel(col)
+    plt.ylabel('Count')
+    plt.title(f'{col} Distribution')
+    plt.savefig(filename)
 
 if __name__ == '__main__':
     main()

@@ -288,19 +288,16 @@ feature_cols = [
     # 'userXRetransmit',
     # 'userZeroRetransmit',
 
-    # idk
+    # idk if it should be input or output
     # 'service',
-    'startup3.3',
-    'startup6.6',
-    'startup5',
-    'startup10',
-    'startup_mc',
+    # 'startup3.3',
+    # 'startup6.6',
+    # 'startup5',
+    # 'startup10',
+    # 'startup_mc',
+    # 'startup_time',
+    # 'resolution',
 ]
-
-# expected_cols = [
-#     'resolution',
-#     'startup_time',
-# ]
 
 # Nonstandard datapoints
    # 10_EWMA_chunksizes    object
