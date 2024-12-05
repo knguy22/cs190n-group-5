@@ -79,11 +79,11 @@ def train_startup(features, expected, filename):
     
     # Perform grid search
     param_grid = {
-        'n_estimators': [30, 50],
-        'max_depth': [10, None],
-        'min_samples_split': [5],
-        'min_samples_leaf': [2],
-        'max_features': ['sqrt'],
+        'n_estimators': [30, 50, 100],
+        'max_depth': [10, 15, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['sqrt', None],
         'bootstrap': [True],
         'criterion': ['squared_error'],
     }
@@ -91,7 +91,7 @@ def train_startup(features, expected, filename):
     grid_search = GridSearchCV(
         estimator=rf_regressor, 
         param_grid=param_grid, 
-        cv=3,
+        cv=5,
         n_jobs=7, 
         verbose=2,
         scoring='neg_mean_squared_error',
@@ -137,11 +137,11 @@ def train_resolution(features, expected, filename):
 
     # Perform grid search
     param_grid = {
-        'n_estimators': [30, 50],
-        'max_depth': [10, None],
-        'min_samples_split': [5],
-        'min_samples_leaf': [2],
-        'max_features': ['sqrt'],
+        'n_estimators': [30, 50, 100],
+        'max_depth': [10, 15, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['sqrt', None],
         'bootstrap': [True],
         'criterion': ['gini', 'entropy'],
     }
@@ -149,7 +149,7 @@ def train_resolution(features, expected, filename):
     grid_search = GridSearchCV(
         estimator=rf_classifier, 
         param_grid=param_grid, 
-        cv=3, 
+        cv=5, 
         n_jobs=7, 
         verbose=2,
         scoring=custom_f1_weighted,
