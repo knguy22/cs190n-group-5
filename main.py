@@ -8,7 +8,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, f1_score
 from sklearn.metrics import classification_report, confusion_matrix
 
-from pkl_cols import feature_cols
+# from pkl_cols import feature_cols
+from pkl_cols import final_filtered_feature_cols as feature_cols
 
 def main():
     df = pd.read_pickle('all_traffic_time_10.pkl')
@@ -52,8 +53,10 @@ def sample(df):
     expected_resolution = df[res_col]
 
     # sampling
+    df_clone = df.copy()
+    df_clone = df_clone[df_clone['resolution'] != 0]
     max_samples = 100000
-    sample_indices = np.random.choice(df.index, min(max_samples, len(df)), replace=False)
+    sample_indices = np.random.choice(df_clone.index, min(max_samples, len(df_clone)), replace=False)
     other_indices = np.setdiff1d(np.arange(len(df)), sample_indices)
 
     samples = {
@@ -79,11 +82,11 @@ def train_startup(features, expected, filename):
     
     # Perform grid search
     param_grid = {
-        'n_estimators': [30, 50, 100],
-        'max_depth': [10, 15, None],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4],
-        'max_features': ['sqrt', None],
+        'n_estimators': [50, 100],
+        'max_depth': [None],
+        'min_samples_split': [2, 5],
+        'min_samples_leaf': [1],
+        'max_features': ['sqrt'],
         'bootstrap': [True],
         'criterion': ['squared_error'],
     }
@@ -92,7 +95,7 @@ def train_startup(features, expected, filename):
         estimator=rf_regressor, 
         param_grid=param_grid, 
         cv=5,
-        n_jobs=7, 
+        n_jobs=-1, 
         verbose=2,
         scoring='neg_mean_squared_error',
     )
@@ -133,15 +136,15 @@ def train_resolution(features, expected, filename):
     rf_classifier = RandomForestClassifier(random_state=42, n_jobs=-1)
     def custom_f1_weighted(estimator, X, y):
         y_pred = estimator.predict(X)
-        return f1_score(y, y_pred, average='weighted', labels=[0, 240, 360, 480, 720, 1080])
+        return f1_score(y, y_pred, average='weighted', labels=[240, 360, 480, 720, 1080])
 
     # Perform grid search
     param_grid = {
-        'n_estimators': [30, 50, 100],
-        'max_depth': [10, 15, None],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4],
-        'max_features': ['sqrt', None],
+        'n_estimators': [50, 100],
+        'max_depth': [None],
+        'min_samples_split': [2, 5],
+        'min_samples_leaf': [1],
+        'max_features': ['sqrt'],
         'bootstrap': [True],
         'criterion': ['gini', 'entropy'],
     }
@@ -150,7 +153,7 @@ def train_resolution(features, expected, filename):
         estimator=rf_classifier, 
         param_grid=param_grid, 
         cv=5, 
-        n_jobs=7, 
+        n_jobs=-1, 
         verbose=2,
         scoring=custom_f1_weighted,
     )

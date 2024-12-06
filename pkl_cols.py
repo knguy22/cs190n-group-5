@@ -299,6 +299,72 @@ feature_cols = [
     # 'resolution',
 ]
 
+final_filtered_feature_cols = [
+    # === Network Layer Features ===
+    
+    # Throughput (up/down) - total, video, and non-video
+    'total_throughput_down',  # Total throughput in the downlink
+    'total_throughput_up',  # Total throughput in the uplink
+    'service_Video_throughput_down',  # Video-specific throughput in the downlink
+    'service_Video_throughput_up',  # Video-specific throughput in the uplink
+    'service_non_video_throughput_down',  # Non-video throughput in the downlink
+    'service_non_video_throughput_up',  # Non-video throughput in the uplink
+    
+    # Packet count (up/down)
+    'userPacketCount',  # Total number of packets (uplink, user-side)
+    'serverPacketCount',  # Total number of packets (downlink, server-side)
+
+    # Byte count (up/down)
+    'userByteCount',  # Total byte count (uplink, user-side)
+    'serverByteCount',  # Total byte count (downlink, server-side)
+
+    # Packet inter-arrivals (up/down)
+    'userAvgInterArrivalTime',  # Average packet inter-arrival time (uplink, user-side)
+    'serverAvgInterArrivalTime',  # Average packet inter-arrival time (downlink, server-side)
+    'userMinInterArrivalTime',  # Minimum packet inter-arrival time (uplink, user-side)
+    'serverMinInterArrivalTime',  # Minimum packet inter-arrival time (downlink, server-side)
+    'userMaxInterArrivalTime',  # Maximum packet inter-arrival time (uplink, user-side)
+    'serverMaxInterArrivalTime',  # Maximum packet inter-arrival time (downlink, server-side)
+    'userStdInterArrivalTime',  # Standard deviation of packet inter-arrival times (uplink, user-side)
+    'serverStdInterArrivalTime',  # Standard deviation of packet inter-arrival times (downlink, server-side)
+    
+    # Number of parallel flows
+    'parallel_flows',  # Concurrent flows in the network
+
+    # === Application Layer Features ===
+
+    # Segment sizes (all previous, last-10, cumulative)
+    '10_avg_chunksize',  # Average size of the last 10 segments
+    '10_chunksizes_50',  # Median size of the last 10 segments
+    '10_chunksizes_50R',  # Relative median size of the last 10 segments
+    '10_chunksizes_75',  # 75th percentile size of the last 10 segments
+    '10_chunksizes_75R',  # Relative 75th percentile size of the last 10 segments
+    '10_chunksizes_85',  # 85th percentile size of the last 10 segments
+    '10_chunksizes_85R',  # Relative 85th percentile size of the last 10 segments
+    '10_chunksizes_90',  # 90th percentile size of the last 10 segments
+    '10_chunksizes_90R',  # Relative 90th percentile size of the last 10 segments
+    '10_max_chunksize',  # Maximum size of the last 10 segments
+    '10_min_chunksize',  # Minimum size of the last 10 segments
+    '10_std_chunksize',  # Standard deviation of sizes of the last 10 segments
+    'cumsum_chunksizes',  # Cumulative size of all downloaded segments
+
+    # Segment requests inter-arrivals
+    'all_prev_down_chunk_iat_avg',  # Average inter-arrival time of previous requests (downlink)
+    'all_prev_down_chunk_iat_max',  # Maximum inter-arrival time of previous requests (downlink)
+    'all_prev_down_chunk_iat_min',  # Minimum inter-arrival time of previous requests (downlink)
+    'all_prev_down_chunk_iat_std',  # Standard deviation of inter-arrival times of previous requests (downlink)
+    'all_prev_up_chunk_iat_avg',  # Average inter-arrival time of previous requests (uplink)
+    'all_prev_up_chunk_iat_max',  # Maximum inter-arrival time of previous requests (uplink)
+    'all_prev_up_chunk_iat_min',  # Minimum inter-arrival time of previous requests (uplink)
+    'all_prev_up_chunk_iat_std',  # Standard deviation of inter-arrival times of previous requests (uplink)
+
+    # Number of downloaded segments
+    'n_chunks_down',  # Total number of downloaded segments
+
+    # Number of requested segments
+    'n_chunks_up',  # Total number of requested segments
+]
+
 # Nonstandard datapoints
    # 10_EWMA_chunksizes    object
 # deployment_session_id    object
