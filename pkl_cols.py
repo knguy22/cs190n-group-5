@@ -358,6 +358,36 @@ final_filtered_feature_cols = [
     'all_prev_up_chunk_iat_min',  # Minimum inter-arrival time of previous requests (uplink)
     'all_prev_up_chunk_iat_std',  # Standard deviation of inter-arrival times of previous requests (uplink)
 
+    'all_prev_down_chunk_iat_50',
+    'all_prev_down_chunk_iat_50R',
+    'all_prev_down_chunk_iat_75',
+    'all_prev_down_chunk_iat_75R',
+    'all_prev_down_chunk_iat_85',
+    'all_prev_down_chunk_iat_85R',
+    'all_prev_down_chunk_iat_90',
+    'all_prev_down_chunk_iat_90R',
+    'all_prev_up_chunk_iat_50',
+    'all_prev_up_chunk_iat_50R',
+    'all_prev_up_chunk_iat_75',
+    'all_prev_up_chunk_iat_75R',
+    'all_prev_up_chunk_iat_85',
+    'all_prev_up_chunk_iat_85R',
+    'all_prev_up_chunk_iat_90',
+    'all_prev_up_chunk_iat_90R',
+
+    'up_chunk_iat_50',
+    'up_chunk_iat_50R',
+    'up_chunk_iat_75',
+    'up_chunk_iat_75R',
+    'up_chunk_iat_85',
+    'up_chunk_iat_85R',
+    'up_chunk_iat_90',
+    'up_chunk_iat_90R',
+    'up_chunk_iat_avg',
+    'up_chunk_iat_max',
+    'up_chunk_iat_min',
+    'up_chunk_iat_std',
+
     # Number of downloaded segments
     'n_chunks_down',  # Total number of downloaded segments
 

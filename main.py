@@ -54,7 +54,7 @@ def sample(df):
 
     # sampling
     df_clone = df.copy()
-    df_clone = df_clone[df_clone['resolution'] != 0]
+    df_clone = df_clone[(df_clone['resolution'] != 0) & (df_clone['resolution'] != 1440)]
     max_samples = 100000
     sample_indices = np.random.choice(df_clone.index, min(max_samples, len(df_clone)), replace=False)
     other_indices = np.setdiff1d(np.arange(len(df)), sample_indices)
@@ -82,9 +82,9 @@ def train_startup(features, expected, filename):
     
     # Perform grid search
     param_grid = {
-        'n_estimators': [50, 100],
+        'n_estimators': [100],
         'max_depth': [None],
-        'min_samples_split': [2, 5],
+        'min_samples_split': [2],
         'min_samples_leaf': [1],
         'max_features': ['sqrt'],
         'bootstrap': [True],
@@ -140,13 +140,13 @@ def train_resolution(features, expected, filename):
 
     # Perform grid search
     param_grid = {
-        'n_estimators': [50, 100],
+        'n_estimators': [100],
         'max_depth': [None],
-        'min_samples_split': [2, 5],
+        'min_samples_split': [2],
         'min_samples_leaf': [1],
         'max_features': ['sqrt'],
         'bootstrap': [True],
-        'criterion': ['gini', 'entropy'],
+        'criterion': ['gini'],
     }
 
     grid_search = GridSearchCV(
