@@ -13,7 +13,7 @@ The python dependencies will need to be installed too. Using a local virtual env
 
 ## Training NetMicroscope
 
-After obtaining the code, we aimed to replicate the NetMicroscope models. After separating the training and test data, 
+After obtaining the code, we aimed to replicate the NetMicroscope models. After separating the training and test data, run NetMicroscope on the training data in order to output the two models for resolution and startup delay.
 
 ## Training Trustee
 
