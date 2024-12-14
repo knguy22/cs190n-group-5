@@ -12,32 +12,6 @@ def main():
     for cond in conditions:
         eval_cond(df_test, cond, res_model)
 
-# follow 480 tree
-# def get_conditions(df):
-#     conds = [pd.Series([True] * len(df), index=df.index)]
-#     conds.append(conds[-1] & (df['10_chunksizes_85'] > 321531.219))
-#     conds.append(conds[-1] & (df['allprev_chunksizes_50'] > 17477.5))
-#     conds.append(conds[-1] & (df['allprev_avg_chunksize'] <= 1276703.875))
-#     conds.append(conds[-1] & (df['allprev_min_chunksize'] <= 5566.0))
-#     conds.append(conds[-1] & (df['allprev_std_chunksize'] <= 546532.969))
-#     return conds
-
-# follow 240 tree
-# def get_conditions(df):
-#     conds = [pd.Series([True] * len(df), index=df.index)]
-#     conds.append(conds[-1] & (df['10_chunksizes_85'] <= 321531.219))
-#     conds.append(conds[-1] & (df['n_prev_up_chunk'] > 15.5))
-#     conds.append(conds[-1] & (df['allprev_std_chunksize'] > 423413.844))
-#     # conds.append(conds[-1] & (df['service_Video_throughput_down'] <= 610.264))
-#     return conds
-
-# 360
-# def get_conditions(df):
-#     conds = [pd.Series([True] * len(df), index=df.index)]
-#     conds.append(conds[-1] & (df['10_chunksizes_85'] <= 321531.219))
-#     conds.append(conds[-1] & (df['n_prev_up_chunk'] <= 15.5))
-#     return conds
-
 def get_conditions(df):
     conds = [pd.Series([True] * len(df), index=df.index)]
     # conds.append(conds[-1] & (df['10_chunksizes_85'] > 321531.219))
