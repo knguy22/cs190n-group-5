@@ -1,5 +1,4 @@
 from trustee import ClassificationTrustee, RegressionTrustee
-# from pkl_cols import final_filtered_feature_cols as feature_cols
 from features import FINAL_MODEL
 from sklearn import tree, metrics
 from sklearn.metrics import classification_report, r2_score, root_mean_squared_error
@@ -7,37 +6,38 @@ import pandas as pd
 import pickle
 import graphviz
 
-# most of this code is copied from the Trustee documentation
+# most of this code is copied from the Trustee examples
+# https://trusteeml.github.io/auto_examples/index.html
 
-def main():
+def main(train_file, test_file, res_model_file, start_model_file):
     print("Importing data...")
-    df_train = pd.read_pickle('testing_2.pkl')
-    df_test = pd.read_pickle('validation_2.pkl')
+    df_train = pd.read_pickle(train_file)
+    df_test = pd.read_pickle(test_file)
 
-    # print("Importing resolution model...")
-    # with open('resolution_rf_all_FINAL_MODEL_FUZZY_time10_model.pkl', 'rb') as file:
-    #     res_model = pickle.load(file)
+    print("Importing resolution model...")
+    with open(res_model_file, 'rb') as file:
+        res_model = pickle.load(file)
 
     print("Importing startup model...")
-    with open('startup_time_rfr_all_FINAL_MODEL_FUZZY_time10_model.pkl', 'rb') as file:
+    with open(start_model_file, 'rb') as file:
         start_model = pickle.load(file)
 
     features_train = df_train[FINAL_MODEL]
     features_test = df_test[FINAL_MODEL]
 
-    # expected_train_res = df_train['resolution']
-    # expected_test_res = df_test['resolution']
+    expected_train_res = df_train['resolution']
+    expected_test_res = df_test['resolution']
 
     expected_train_start = df_train['startup_time']
     expected_test_start = df_test['startup_time']
 
-    # print("Resolution on training data:")
-    # y_pred = res_model.predict(features_train)
-    # print(metrics.classification_report(expected_train_res, y_pred, zero_division=0))
+    print("Resolution on training data:")
+    y_pred = res_model.predict(features_train)
+    print(metrics.classification_report(expected_train_res, y_pred, zero_division=0))
 
-    # print("Resolution on test data:")
-    # y_pred = res_model.predict(features_test)
-    # print(metrics.classification_report(expected_test_res, y_pred, zero_division=0))
+    print("Resolution on test data:")
+    y_pred = res_model.predict(features_test)
+    print(metrics.classification_report(expected_test_res, y_pred, zero_division=0))
 
     print("Startup on training data:")
     y_pred = start_model.predict(features_train)
@@ -51,7 +51,7 @@ def main():
 
     print("starting trustee")
     trustee_start(features_train, expected_train_start, features_test, expected_test_start, start_model, 'rf_start')
-    # trustee_res(features_train, expected_train_res, features_test, expected_test_res, res_model, 'rf_res')
+    trustee_res(features_train, expected_train_res, features_test, expected_test_res, res_model, 'rf_res')
 
 def trustee_res(X_train, y_train, X_test, y_test, model, filename):
     expected_classes = ['240', '360', '480', '720', '1080']
@@ -150,4 +150,9 @@ def export_dt(dt, pruned_dt, class_names, feature_names, filename):
     graph.render(f"pruned_{filename}")
 
 if __name__ == '__main__':
-    main()
+    train_data = 'train_2.pkl'
+    test_data = 'test_2.pkl'
+    res_model = 'resolution_rf_all_FINAL_MODEL_FUZZY_time10_model.pkl'
+    start_model = 'startup_time_rf_all_FINAL_MODEL_FUZZY_time10_model.pkl'
+
+    main(train_data, test_data, res_model, start_model)
