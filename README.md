@@ -2,18 +2,25 @@
 
 ## Prerequisites
 
-The following repository contains the (much of) the code that was used to perform our project. Because our project is evaluating the 
-performance of NetMicroscope, part of the codebase was inextricably linked to NetMicrosopes', and we didn't seek permission 
-to share it publically on Github. Thus, this codebase will not work as is; one must first contact the authors involved 
+### NetMicroscope Code
+The following repository contains the (much of) the code that was used to perform our project. However, because our project is evaluating the performance of NetMicroscope, part of the codebase was inextricably linked to NetMicrosopes', and we didn't seek permission to share it publically on Github. Thus, this codebase will not work as is; one must first contact the authors involved 
 (Nick Feemster or Francesco Bronzino) to ask for the source code or obtain it in some other permissible way.
 
+Once that is obtained, place `features.py` into this directory. This step is important because the other python scripts in this repository rely on `features.py` to run and will not work otherwise.
+
+### Dataset 
 The NetMicroscope dataset can be obtained separately through this [public address](https://fbronzino.com/projects/vinference/).
 
+### Dependencies
 The python dependencies will need to be installed too. Using a local virtual environment, install the dependencies located within `requirements.txt` using the appropriate command for your operating system.
+
+## Separate Training and Test Data
+
+Use `split_data.py` to split the dataset obtained in the prerequsites. Edit it to your specifications for filenames to input or output.
 
 ## Training NetMicroscope
 
-After obtaining the code, we aimed to replicate the NetMicroscope models. After separating the training and test data, run NetMicroscope on the training data in order to output the two models for resolution and startup delay.
+After obtaining the code, NetMicroscope can be replicated by running its training code over the training data. This should output the two models for resolution and startup delay.
 
 ## Training Trustee
 
